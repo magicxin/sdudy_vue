@@ -1,0 +1,30 @@
+{
+  "name": "study_vue",
+  "version": "0.0.1",
+  "description": "study vue",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/magicxin/sdudy_vue.git"
+  },
+  "keywords": [
+    "study",
+    "vue",
+    "tutorial"
+  ],
+  "author": "magix",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/magicxin/sdudy_vue/issues"
+  },
+  "homepage": "https://github.com/magicxin/sdudy_vue#readme",
+  "devDependencies": {
+    "grunt": "^1.0.4",
+    "grunt-contrib-jshint": "^2.1.0",
+    "grunt-contrib-nodeunit": "^2.0.0",
+    "grunt-contrib-uglify": "^4.0.1"
+  }
+}
