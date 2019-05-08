@@ -1,25 +1,38 @@
 module.exports = function(grunt) {
-
     // Project configuration.
     grunt.initConfig({
-      pkg: grunt.file.readJSON('package.json'),
-      uglify: {
+      jshint: {
+        src: ['src/**/*.js'],
         options: {
-          banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+          jshintrc: "./.jshintrc"
+        }
+      },
+      watch: {
+        files: ['src/**/*.js',],
+        tasks: ['jshint']
+      },
+      mocha: {
+        test: {
+          src: ['tests/**/*.html'],
+          options: {
+            run: true,
+          },
         },
-        build: {
-          src: 'src/<%= pkg.name %>.js',
-          dest: 'build/<%= pkg.name %>.min.js'
+      },
+      componentbuild: {
+        options: {
+          src: 'index.css',
+          dest: './build/',
+          name: 'study_vue',
+          verbose: true
         }
       }
-    });
-    
-    // 加载包含 "uglify" 任务的插件。
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.registerTask('default', 'Log some stuff.', function() {
-      grunt.log.write('Logging some stuff...').ok();
-    }, ['uglify']);
+  });
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks( 'grunt-contrib-jshint' );
+    grunt.loadNpmTasks( 'grunt-mocha' );
+    grunt.loadNpmTasks('grunt-component-build');
     // 默认被执行的任务列表。
-    // grunt.registerTask('default', ['uglify']);
-  
+    grunt.registerTask('test',['mocha']);
+    grunt.registerTask('default',['jshint','mocha','componentbuild']);
   };

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Getting Started with Component</title>
+    <!-- <link rel="stylesheet" href="build/build.css"> -->
+    <link rel="stylesheet" type="text/css" href="../node_modules/grunt-mocha/node_modules/mocha/mocha.css">
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <h1>My First Component</h1>
+    <p class="blink">Woo!</p>
+    <!-- <script src="build/build.js"></script> -->
+    <!-- run mocha after all test are loaded -->
+    <script src="../node_modules/grunt-mocha/node_modules/mocha/mocha.js"></script>
+    <script type="text/javascript" charset="utf-8">
+    // Only tests run in real browser, injected script run if options.run == true
+    if (navigator.userAgent.indexOf('PhantomJS') < 0) {
+        console.log(1)
+      mocha.run();
+    }
+  </script> 
+  </body>
+</html>
