@@ -9,7 +9,7 @@ module.exports = function(grunt) {
       },
       watch: {
         files: ['src/**/*.js',],
-        tasks: ['jshint']
+        tasks: ['jshint','browserify']
       },
       mocha: {
         test: {
@@ -20,7 +20,15 @@ module.exports = function(grunt) {
         },
       },
       browserify: {
-        'build/bundle.js': ['src/main.js']
+        build: {
+          src: ['src/main.js'],
+          dest: 'build/bundle.js',
+          options: {
+            browserifyOptions: {
+              standalone: 'Seed'
+            }
+          }
+        }
       }
   });
     grunt.loadNpmTasks('grunt-contrib-watch');

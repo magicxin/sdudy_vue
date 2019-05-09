@@ -1,3 +1,52 @@
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Seed = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+module.exports = {
+    text: function (el, value) {
+        el.textContent = value || '';
+    },
+    show: function (el, value) {
+        el.style.display = value ? '' : 'none';
+    },
+    class: function (el, value, classname) {
+        el.classList[value ? 'add' : 'remove'](classname);
+    },
+    on: {
+        update: function (el, handler, event, directive) {
+            if (!directive.handlers) {
+                directive.handlers = {};
+            }
+            var handlers = directive.handlers;
+            if (handlers[event]) {
+                el.removeEventListener(event, handlers[event]);
+            }
+            if (handler) {
+                handler = handler.bind(el);
+                el.addEventListener(event, handler);
+                handlers[event] = handler;
+            }
+        },
+        unbind: function (el, event, directive) {
+            if (directive.handlers) {
+                el.removeEventListener(event, directive.handlers[event]);
+            }
+        },
+        customFilter: function (handler, selectors) {
+            return function (e) {
+                var match = selectors.every(function (selector) {
+                    return e.target.webkitMatchesSelector(selector);
+                });
+                if (match) handler.apply(this, arguments);
+            };
+        }
+    }
+};
+},{}],2:[function(require,module,exports){
+module.exports = {
+    capitalize: function (value) {
+        value = value.toString();
+        return value.charAt(0).toUpperCase() + value.slice(1);
+    }
+};
+},{}],3:[function(require,module,exports){
 var prefix      = 'sd',
     Filters     = require('./filters'),
     Directives  = require('./directives'),
@@ -136,3 +185,5 @@ module.exports = {
     filters: Filters,
     directives: Directives
 };
+},{"./directives":1,"./filters":2}]},{},[3])(3)
+});
