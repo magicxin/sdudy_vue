@@ -21,7 +21,8 @@ module.exports = function(grunt) {
       },
       browserify: {
         build: {
-          src: ['src/main.js'],
+          // src: ['src/main.js'],
+          src: ['src/magic/main.js'],
           dest: 'build/bundle.js',
           options: {
             browserifyOptions: {
