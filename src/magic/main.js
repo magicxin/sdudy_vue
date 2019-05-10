@@ -1,23 +1,32 @@
 var prefix = 'sd',
     Directives = require('./directives'),
+    Filters = require('./filters'),
     selector = Object.keys(Directives).map(function(d) {
         return '[' + prefix + '-' + d + ']';
     }).join();
 function Seed(opt) {
-    console.log(opt);
     var root = document.getElementById('test');
+    var self = this;
     // selector 是一个由选择器组成，由 , 分割的字符串，querySelectorAll 的返回值是一个静态 nodeList 
     var els = root.querySelectorAll(selector);
     var bindings = {}; // internal real data
-    this.scope = {}; // external interface
+    self.scope = {}; // external interface
     [].forEach.call(els, processNode);
     // 父节点也需要判断
     processNode(root);
-    
+
+    // initialize all variables by invoking setters
+    for (var key in bindings) {
+        self.scope[key] = opt.scope[key];
+    }
+
     function processNode(el) {
         [].forEach.call(el.attributes, function(attr) {
             // 获取所有含有指令的节点
-            parseDirective(attr);
+            var directive = parseDirective(attr);
+            if (directive) {
+                bindDirective(self, el, bindings, directive);
+            }
         });
     }
     function parseDirective(attr) {
@@ -39,8 +48,66 @@ function Seed(opt) {
             filters = pipeIndex === -1 ? null : exp.slice(pipeIndex + 1).split('|').map(function (filter) {
                 return filter.trim();
             });
-        console.log(filters);
-        return def ? {} : null;
+        return def ? {
+            attr: attr,
+            key: key,
+            filters: filters,
+            definition: def,
+            argument: arg,
+            update: typeof def === 'function' ? def : def.update
+        } : null;
+    }
+    function bindDirective (seed, el, bindings, directive) {
+        // 移除临时的节点选择器
+        el.removeAttribute(directive.attr.name);
+        var key = directive.key,
+        binding = bindings[key]; // undefined
+        if (!binding) {
+            bindings[key] = binding = {
+                value: undefined,
+                directives: []
+            };
+        }
+        directive.el = el;
+        binding.directives.push(directive);
+        if (!seed.scope.hasOwnProperty(key)) {
+            bindAccessors(seed, key, binding);
+        }
+    }
+    function bindAccessors (seed, key, binding) {
+        Object.defineProperty(seed.scope, key, {
+            get: function () {
+                return binding.value;
+            },
+            set: function (value) {
+                binding.value = value;
+                binding.directives.forEach(function (directive) {
+                    if (value && directive.filters) {
+                        value = applyFilters(value, directive);
+                    }
+                    // 执行指令方法
+                    directive.update(
+                        directive.el,
+                        value,
+                        directive.argument,
+                        directive,
+                        seed
+                    );
+                });
+            }
+        });
+    }
+    function applyFilters (value, directive) {
+        if (directive.definition.customFilter) {
+            return directive.definition.customFilter(value, directive.filters);
+        } else {
+            directive.filters.forEach(function (filter) {
+                if (Filters[filter]) {
+                    value = Filters[filter](value);
+                }
+            });
+            return value;
+        }
     }
 }
 
